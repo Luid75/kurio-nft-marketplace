@@ -15,8 +15,8 @@ export async function getQuote(items: CartLine[], coupon: string): Promise<Quote
   const { data } = await api.post<Quote>('/quote', { items, coupon })
   return data
 }
-export async function placeOrder(items: CartLine[], coupon: string, collector: Collector, wallet: string, requestId: string): Promise<Order> {
-  const { data } = await api.post<Order>('/orders', { items, coupon, collector, wallet }, {
+export async function placeOrder(items: CartLine[], coupon: string, collector: Collector, wallet: string, requestId: string, expectedTotal: string): Promise<Order> {
+  const { data } = await api.post<Order>('/orders', { items, coupon, collector, wallet, expectedTotal }, {
     headers: { 'Idempotency-Key': requestId },
   })
   return data
