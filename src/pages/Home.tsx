@@ -67,7 +67,7 @@ export function Home() {
         <div className="pagination" aria-label="Paginação do catálogo">{Array.from({length:pages},(_,index)=>index+1).map(page=><button key={page} type="button" className={filters.page===page?'active':''} onClick={()=>update({page})}>{page}</button>)}<button type="button" aria-label="Próxima página" disabled={filters.page>=pages} onClick={()=>update({page:filters.page+1})}><ChevronRight size={17}/></button></div>
       </div>
     </section>
-    <section className="promos container">
+    <section className="promos container" id="criadores">
       <div className="promo"><Art variant="emerald"/><div><h3>Lançamentos gênesis<br/>de edição limitada</h3><p>Colecione edições escassas diretamente dos criadores antes da revelação pública.</p><a href="#catalogo" className="ui-button ui-button-primary ui-button-sm">Explorar <ArrowRight size={14}/></a></div></div>
       <div className="promo"><Art variant="baron"/><div><h3>Arte digital selecionada<br/>e muito mais</h3><p>Explore novos artistas, coleções verificadas e obras digitais que definem o futuro.</p><a href="#catalogo" className="ui-button ui-button-primary ui-button-sm">Explorar <ArrowRight size={14}/></a></div></div>
     </section>
