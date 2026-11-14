@@ -53,14 +53,20 @@ Antes do Playwright, instale o Chromium com `npx playwright install chromium`.
 
 ## Deploy na Vercel
 
-Importe `Luid75/kurio-nft-marketplace` em https://vercel.com/new.
+Aplicação publicada: https://kurio-nft-marketplace-luid4.vercel.app. O deploy é realizado automaticamente a partir da branch `main` no GitHub.
 
 Configuração: framework Vite, build `npm run build`, saída `dist`. O arquivo `vercel.json` já contempla o fallback de navegação para rotas client-side.
 
-Um commit no GitHub **não significa que o deploy já está publicado**. A importação do repositório na conta Vercel deve ser concluída para obter a URL pública.
+Confira o status do último deploy no painel Vercel antes de compartilhar a versão atualizada.
 
 ## Escopo e limitações
 
 Este projeto é um primeiro incremento funcional. A arte de exemplo é SVG autoral, inspirada na composição do protótipo, e não substitui os arquivos de imagem originais do Figma. APIs, login, carteiras e pagamentos são inteiramente simulados. Não há blockchain, tokens ou pagamentos reais.
 
 A integração em tempo real depende de servidor Socket.IO fornecido separadamente. O conjunto completo de cenários determinísticos, segurança de sessão em backend, integração MSW–Socket.IO, regressões visuais e metas Lighthouse **ainda não foi implementado nem validado**. Consulte [ARCHITECTURE.md](ARCHITECTURE.md).
+
+## Acompanhamento dos requisitos do desafio
+
+A entrega ainda é parcial em relação ao README oficial de `junglegaming/frontend-challenge`. Já existem rotas, catálogo, checkout simulado, MSW, testes E2E e deploy público. Ainda são necessários: uso efetivo de componentes shadcn/ui; cenários MSW completos e reproduzíveis; transporte Socket.IO simulado funcionando no build público; sessões e mutations de conta inteiramente via API; fluxo de pagamento pendente/recusado; testes de regressão visual e relatórios Lighthouse com as metas solicitadas. As ilustrações SVG são provisórias e não equivalem aos assets originais do Figma.
+
+As mutations de pedido exigem `Idempotency-Key`; a mesma chave recupera o pedido anterior, enquanto a reutilização com itens ou carteira diferentes retorna HTTP 409. O checkout envia `expectedTotal` para recusar cotações alteradas. Senhas cadastradas no mock são armazenadas como hash SHA-256, apenas para evitar texto puro na demonstração; **isso não constitui autenticação segura de produção**.
