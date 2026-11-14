@@ -14,7 +14,7 @@ export function NftDetails() {
   const { nftId } = useParams({ from: '/nft/$nftId' })
   const router = useRouter()
   const [selectedView, setSelectedView] = useState(0)
-  const goBack = () => { if (window.history.state?.key && window.history.length > 1) window.history.back(); else void router.navigate({ to: '/', search: initialFilters }) }
+  const goBack = () => { if (document.referrer.startsWith(window.location.origin) && window.history.length > 1) window.history.back(); else void router.navigate({ to: '/', search: initialFilters }) }
   const [quantity, setQuantity] = useState(1)
   const [tab, setTab] = useState<'details' | 'reviews'>('details')
   const { addToCart, toggleFavorite, favorites } = useMarketplace()
