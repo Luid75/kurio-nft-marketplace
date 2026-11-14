@@ -39,7 +39,7 @@ export function Cart() {
           {coupon && <p className="coupon-applied">Cupom aplicado: {coupon} <button onClick={()=>{setCoupon('');setCouponText('');sessionStorage.removeItem('kurio:checkout:coupon')}}>Remover</button></p>}
           {quote.isError && <p className="form-error" role="alert">{errorMessage(quote.error)}</p>}
           {quote.data && <div className="summary-lines"><div><span>Subtotal</span><span>{money(quote.data.subtotal)}</span></div><div><span>Desconto do lançamento</span><span>− {money(quote.data.discount)}</span></div><div><span>Taxa de rede</span><span>{money(quote.data.networkFee)}</span></div><div className="summary-total"><strong>Total</strong><strong>{money(quote.data.total)}</strong></div></div>}
-          {collector ? <Link className={'ui-button ui-button-primary ui-button-default checkout-cta'+(quote.isError?' disabled':'')} to="/checkout">Conectar e finalizar</Link> : <Button className="checkout-cta" onClick={requestLogin}>Entrar para finalizar</Button>}
+          {collector ? (quote.isError || quote.isFetching || !quote.data ? <Button className="checkout-cta" disabled>Atualizando cotação...</Button> : <Link className="ui-button ui-button-primary ui-button-default checkout-cta" to="/checkout">Conectar e finalizar</Link>) : <Button className="checkout-cta" onClick={requestLogin}>Entrar para finalizar</Button>}
           <Link to="/" search={initialFilters} className="continue-link">Continuar explorando</Link>
         </aside>
       </div>}
