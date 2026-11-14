@@ -357,3 +357,17 @@ select { cursor: pointer; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+/* Detail layout: prevent intrinsic SVG dimensions from overflowing the information column. */
+.detail-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+.detail-gallery { min-width: 0; grid-template-columns: 70px minmax(0, 1fr); align-items: start; }
+.detail-primary-art { min-width: 0; width: 100%; overflow: hidden; }
+.detail-primary-art .art-svg { width: 100%; height: auto; aspect-ratio: 1; }
+.gallery-thumbnails { min-width: 0; }
+.gallery-thumbnails button { width: 100%; overflow: hidden; }
+.gallery-thumbnails .art-svg { width: 100%; height: auto; aspect-ratio: 1; }
+.detail-info { min-width: 0; overflow-wrap: anywhere; }
+.back-link { border: 0; background: transparent; color: #e6a05d; padding: 4px 10px 4px 0; }
+.back-link:hover { text-decoration: underline; }
+@media (max-width: 780px) { .detail-hero { grid-template-columns: minmax(0,1fr); } }
+@media (max-width: 540px) { .detail-gallery { grid-template-columns: 48px minmax(0,1fr); } }
