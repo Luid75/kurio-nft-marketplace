@@ -23,7 +23,7 @@ export function Checkout() {
       return placeOrder(cart,coupon,collector,wallet,requestKey.current,quote.data.total)
     },
     onSuccess: order => {
-      removePurchased(cart)
+      if (order.status === 'confirmed') removePurchased(cart)
       void navigate({to:'/order/$orderId',params:{orderId:order.id}})
     },
   })
@@ -35,7 +35,7 @@ export function Checkout() {
     <div className="checkout-layout">
       <section className="checkout-form">
         <h2>Dados do colecionador</h2><div className="checkout-box"><strong>{collector.name}</strong><p>{collector.email}</p></div>
-        <h2>Selecionar carteira</h2><div className="wallet-choice"><Wallet size={22}/><label><span>Carteira para simulação</span><select value={wallet} onChange={event=>setWallet(event.target.value)}><option>MetaMask (simulada)</option><option>WalletConnect (simulada)</option><option>Coinbase Wallet (simulada)</option>{wallets.map(item=><option key={item.id} value={item.name}>{item.name}</option>)}</select></label></div>
+        <h2>Selecionar carteira</h2><div className="wallet-choice"><Wallet size={22}/><label><span>Carteira para simulação</span><select value={wallet} onChange={event=>setWallet(event.target.value)}><option>MetaMask (simulada)</option><option>WalletConnect (simulada)</option><option>Coinbase Wallet (simulada)</option><option>Carteira recusada (simulada)</option>{wallets.map(item=><option key={item.id} value={item.name}>{item.name}</option>)}</select></label></div>
         <div className="checkout-disclaimer"><ShieldCheck size={19}/><p>Pagamento demonstrativo. Nenhuma criptomoeda será transferida e nenhuma carteira real será conectada.</p></div>
         <h2>Revisão do pedido</h2>{cart.map(line=>{const nft=nfts.find(item=>item.id===line.id);return nft?<div className="checkout-item" key={line.id}><span>{nft.name} × {line.quantity}</span><strong>{money((Number(nft.price)*line.quantity).toString())}</strong></div>:null})}
       </section>
