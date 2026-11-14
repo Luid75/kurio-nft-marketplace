@@ -51,7 +51,6 @@ export const handlers = [
     if (sort === 'low') filtered.sort((a, b) => Number(a.price) - Number(b.price))
     if (sort === 'high') filtered.sort((a, b) => Number(b.price) - Number(a.price))
     if (sort === 'name') filtered.sort((a, b) => a.name.localeCompare(b.name))
-    if (sort === 'recent') filtered.reverse()
     const size = 9
     return HttpResponse.json({ items: filtered.slice((page - 1) * size, page * size), total: filtered.length, page, pages: Math.max(1, Math.ceil(filtered.length / size)) })
   }),
