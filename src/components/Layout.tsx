@@ -1,6 +1,6 @@
 import { useState, type ReactNode, type FormEvent } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
-import { Search, ShoppingCart, LogIn, Menu, X, Heart, UserRound } from 'lucide-react'
+import { Search, ShoppingCart, LogIn, Menu, X, UserRound } from 'lucide-react'
 import { useMarketplace } from '../state/MarketplaceContext'
 import { initialFilters } from '../lib/search'
 import { AuthModal } from './AuthModal'
