@@ -26,7 +26,7 @@ function Header() {
     <nav className={menu ? 'nav open' : 'nav'} aria-label="Menu principal">
       <Link to="/" search={initialFilters} activeOptions={{ exact: true }} activeProps={{ className: 'active' }} onClick={() => setMenu(false)}>Início</Link>
       <Link to="/" search={initialFilters} activeProps={{ className: 'active' }} onClick={() => setMenu(false)}>Mercado</Link>
-      <Link to="/" search={initialFilters} onClick={() => setMenu(false)}>Criadores</Link>
+      <a href="/#criadores" onClick={() => setMenu(false)}>Criadores</a>
       <a href="/#diario" onClick={() => setMenu(false)}>Aprenda</a>
     </nav>
     <div className="header-actions">
@@ -53,7 +53,7 @@ export function Footer() {
     <div className="footer-band"><strong>KURIO</strong><span>Feito para colecionadores,<br/> criadores e cultura</span><span>contato@email.com</span><span>Propriedade digital para todos.</span></div>
     <div className="footer-columns">
       <div><h4>Meu perfil</h4><Link to="/account">Meu perfil</Link><Link to="/account">Minha coleção</Link><Link to="/wallets">Carteiras</Link></div>
-      <div><h4>Central de ajuda</h4><a href="#top">Como comprar NFTs</a><a href="#top">Carteira e segurança</a><a href="#top">Política do mercado</a></div>
+      <div><h4>Central de ajuda</h4><a href="/#diario">Como comprar NFTs</a><Link to="/wallets">Carteira e segurança</Link><a href="/#diario">Política do mercado</a></div>
       <div><h4>Coleções</h4><Link to="/" search={{...initialFilters,category:'Arte digital'}}>Arte digital</Link><Link to="/" search={{...initialFilters,category:'Fotografia'}}>Fotografia</Link><Link to="/" search={{...initialFilters,category:'Música'}}>Música</Link><Link to="/" search={{...initialFilters,category:'Arte 3D'}}>Arte 3D</Link></div>
       <div><h4>Comunidade</h4><p>Instagram · X · Discord</p><h4>Carteiras compatíveis</h4><span className="wallet-logos">METAMASK · WALLETCONNECT · COINBASE</span></div>
     </div>
