@@ -12,5 +12,5 @@ export function readStored<T>(key: string, fallback: T): T {
   }
 }
 export function saveStored(key: string, value: unknown) {
-  try { localStorage.setItem(key, JSON.stringify(value)) } catch { /* Storage may be unavailable in private browsing. */ }
+  try { localStorage.setItem(key, JSON.stringify(value)) } catch {}
 }
