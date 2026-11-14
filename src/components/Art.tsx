@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import type { ArtVariant } from '../types'
 
 const palettes = {
@@ -9,7 +10,7 @@ const palettes = {
 
 export function Art({ variant, className = '' }: { variant: ArtVariant; className?: string }) {
   const c = palettes[variant]
-  const id = 'art-' + variant
+  const id = useId().replace(/:/g, '-') + '-' + variant
   return (
     <svg className={'art-svg ' + className} viewBox="0 0 400 400" role="img" aria-label={'Ilustração do NFT ' + variant} xmlns="http://www.w3.org/2000/svg">
       <defs>
