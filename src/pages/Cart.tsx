@@ -19,7 +19,7 @@ export function Cart() {
     return nft ? [{...line,nft}] : []
   })
   const quote = useQuery({ queryKey:['quote',cart,coupon], queryFn:()=>getQuote(cart,coupon), enabled:cart.length>0, retry:false })
-  function applyCoupon(event: FormEvent) { event.preventDefault(); setCoupon(couponText.trim().toUpperCase()) }
+  function applyCoupon(event: FormEvent) { event.preventDefault(); const code = couponText.trim().toUpperCase(); setCoupon(code); sessionStorage.setItem('kurio:checkout:coupon', code) }
   function requestLogin() { setAuthMode('login'); setAuthOpen(true) }
   return <div className="container cart-page">
     <div className="breadcrumbs"><Link to="/">Início</Link> / <Link to="/">Mercado</Link> / Carrinho</div>
@@ -35,7 +35,7 @@ export function Cart() {
           </div>)}
         </div>
         <aside className="order-summary"><h3>Resumo da carteira</h3><form onSubmit={applyCoupon}><label htmlFor="coupon">Código promocional</label><div className="coupon-row"><input id="coupon" placeholder="Digite o código promocional..." value={couponText} onChange={event=>setCouponText(event.target.value)}/><Button type="submit" size="sm">Aplicar</Button></div></form>
-          {coupon && <p className="coupon-applied">Cupom aplicado: {coupon} <button onClick={()=>{setCoupon('');setCouponText('')}}>Remover</button></p>}
+          {coupon && <p className="coupon-applied">Cupom aplicado: {coupon} <button onClick={()=>{setCoupon('');setCouponText('');sessionStorage.removeItem('kurio:checkout:coupon')}}>Remover</button></p>}
           {quote.isError && <p className="form-error" role="alert">{errorMessage(quote.error)}</p>}
           {quote.data && <div className="summary-lines"><div><span>Subtotal</span><span>{money(quote.data.subtotal)}</span></div><div><span>Desconto do lançamento</span><span>− {money(quote.data.discount)}</span></div><div><span>Taxa de rede</span><span>{money(quote.data.networkFee)}</span></div><div className="summary-total"><strong>Total</strong><strong>{money(quote.data.total)}</strong></div></div>}
           {collector ? <Link className={'ui-button ui-button-primary ui-button-default checkout-cta'+(quote.isError?' disabled':'')} to="/checkout">Conectar e finalizar</Link> : <Button className="checkout-cta" onClick={requestLogin}>Entrar para finalizar</Button>}
