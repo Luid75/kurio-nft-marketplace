@@ -78,6 +78,7 @@ test('navegação principal não produz erros de execução', async ({ page }) =
 
 test('API impede reutilização de chave idempotente com pedido diferente', async ({ page }) => {
   await page.goto('/')
+  await expect(page.locator('.nft-card').first()).toBeVisible()
   const result = await page.evaluate(async () => {
     const key = crypto.randomUUID()
     const collector = { id: 'colecionador@kurio.com', name: 'Colecionador Kurio', email: 'colecionador@kurio.com' }
