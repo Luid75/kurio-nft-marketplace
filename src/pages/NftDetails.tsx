@@ -1,6 +1,6 @@
 import { initialFilters } from '../lib/search'
 import { useState } from 'react'
-import { Link, useParams } from '@tanstack/react-router'
+import { Link, useParams, useRouter } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { ChevronRight, Heart, Minus, Plus, ShoppingCart, Star, ShieldCheck } from 'lucide-react'
 import { getNft } from '../lib/api'
@@ -12,6 +12,9 @@ import { Button } from '../components/ui/Button'
 
 export function NftDetails() {
   const { nftId } = useParams({ from: '/nft/$nftId' })
+  const router = useRouter()
+  const [selectedView, setSelectedView] = useState(0)
+  const goBack = () => { if (window.history.state?.key && window.history.length > 1) window.history.back(); else void router.navigate({ to: '/', search: initialFilters }) }
   const [quantity, setQuantity] = useState(1)
   const [tab, setTab] = useState<'details' | 'reviews'>('details')
   const { addToCart, toggleFavorite, favorites } = useMarketplace()
@@ -20,9 +23,9 @@ export function NftDetails() {
   if (isError || !nft) return <div className="container state-panel page-gap"><h2>NFT não encontrado</h2><p>{error instanceof Error ? error.message : 'O item solicitado não está disponível.'}</p><Button onClick={() => void refetch()}>Tentar novamente</Button> <Link to="/" search={initialFilters}>Voltar ao mercado</Link></div>
   const available = Math.min(20, nft.maxEdition - nft.edition + 1)
   return <div className="container detail-page">
-    <div className="breadcrumbs"><Link to="/" search={initialFilters}>Início</Link> <ChevronRight size={14}/> <Link to="/" search={initialFilters}>Mercado</Link> <ChevronRight size={14}/> {nft.name}</div>
+    <div className="breadcrumbs"><button type="button" className="back-link" onClick={goBack} aria-label="Voltar à página anterior">← Voltar</button> <Link to="/" search={initialFilters}>Início</Link> <ChevronRight size={14}/> <Link to="/" search={initialFilters}>Mercado</Link> <ChevronRight size={14}/> {nft.name}</div>
     <div className="detail-hero">
-      <div className="detail-gallery"><div className="gallery-thumbnails">{Array.from({length:4},(_,index)=><button className={index===0?'selected':''} key={index} aria-label={'Vista '+(index+1)}><Art variant={nft.variant}/></button>)}</div><div className="detail-primary-art"><Art variant={nft.variant}/></div></div>
+      <div className="detail-gallery"><div className="gallery-thumbnails">{Array.from({length:4},(_,index)=><button className={index===selectedView?'selected':''} key={index} type="button" onClick={()=>setSelectedView(index)} aria-pressed={index===selectedView} aria-label={'Vista '+(index+1)}><Art variant={nft.variant}/></button>)}</div><div className="detail-primary-art"><Art variant={nft.variant}/></div></div>
       <div className="detail-info">
         <h1>{nft.name}</h1><strong className="detail-price">{money(nft.price)}</strong>
         <p className="rating"><Star size={14} fill="currentColor"/> <Star size={14} fill="currentColor"/> <Star size={14} fill="currentColor"/> <Star size={14} fill="currentColor"/> <Star size={14} fill="currentColor"/> <span>19 avaliações de colecionadores</span></p>
