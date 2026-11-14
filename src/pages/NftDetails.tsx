@@ -25,7 +25,7 @@ export function NftDetails() {
   return <div className="container detail-page">
     <div className="breadcrumbs"><button type="button" className="back-link" onClick={goBack} aria-label="Voltar à página anterior">← Voltar</button> <Link to="/" search={initialFilters}>Início</Link> <ChevronRight size={14}/> <Link to="/" search={initialFilters}>Mercado</Link> <ChevronRight size={14}/> {nft.name}</div>
     <div className="detail-hero">
-      <div className="detail-gallery"><div className="gallery-thumbnails">{Array.from({length:4},(_,index)=><button className={index===selectedView?'selected':''} key={index} type="button" onClick={()=>setSelectedView(index)} aria-pressed={index===selectedView} aria-label={'Vista '+(index+1)}><Art variant={nft.variant}/></button>)}</div><div className="detail-primary-art"><Art variant={nft.variant}/></div></div>
+      <div className="detail-gallery"><div className="gallery-thumbnails">{Array.from({length:4},(_,index)=><button className={index===selectedView?'selected':''} key={index} type="button" onClick={()=>setSelectedView(index)} aria-pressed={index===selectedView} aria-label={'Vista '+(index+1)}><Art variant={nft.variant}/></button>)}</div><div className="detail-primary-art"><div className={"detail-art-view detail-art-view-" + selectedView}><Art variant={nft.variant}/></div></div></div>
       <div className="detail-info">
         <h1>{nft.name}</h1><strong className="detail-price">{money(nft.price)}</strong>
         <p className="rating"><Star size={14} fill="currentColor"/> <Star size={14} fill="currentColor"/> <Star size={14} fill="currentColor"/> <Star size={14} fill="currentColor"/> <Star size={14} fill="currentColor"/> <span>19 avaliações de colecionadores</span></p>
