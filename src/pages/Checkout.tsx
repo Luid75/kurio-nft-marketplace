@@ -19,7 +19,8 @@ export function Checkout() {
   const submit = useMutation({
     mutationFn: async () => {
       if (!collector) throw new Error('Entre na sua conta.')
-      return placeOrder(cart,coupon,collector,wallet,requestKey.current)
+      if (!quote.data || quote.isFetching) throw new Error('Aguarde a atualização da cotação.')
+      return placeOrder(cart,coupon,collector,wallet,requestKey.current,quote.data.total)
     },
     onSuccess: order => {
       removePurchased(cart)
@@ -40,7 +41,7 @@ export function Checkout() {
       </section>
       <aside className="order-summary"><h3>Resumo do pedido</h3>{quote.isPending?<p>Atualizando valores...</p>:quote.isError?<p className="form-error" role="alert">{errorMessage(quote.error)}</p>:quote.data&&<div className="summary-lines"><div><span>Subtotal</span><span>{money(quote.data.subtotal)}</span></div><div><span>Desconto</span><span>− {money(quote.data.discount)}</span></div><div><span>Taxa de rede</span><span>{money(quote.data.networkFee)}</span></div><div className="summary-total"><strong>Total</strong><strong>{money(quote.data.total)}</strong></div></div>}
         {submit.isError&&<p className="form-error" role="alert">{errorMessage(submit.error)}</p>}
-        <Button className="checkout-cta" disabled={quote.isPending||quote.isError||submit.isPending} onClick={()=>submit.mutate()}>{submit.isPending?'Confirmando pedido...':'Confirmar compra simulada'}</Button><Link to="/cart" className="continue-link">Voltar ao carrinho</Link>
+        <Button className="checkout-cta" disabled={!quote.data||quote.isFetching||quote.isPending||quote.isError||submit.isPending} onClick={()=>submit.mutate()}>{submit.isPending?'Confirmando pedido...':'Confirmar compra simulada'}</Button><Link to="/cart" className="continue-link">Voltar ao carrinho</Link>
       </aside>
     </div>
   </div>
