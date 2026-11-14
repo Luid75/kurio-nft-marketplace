@@ -30,6 +30,6 @@ test('login de demonstração exibe perfil', async ({ page }) => {
   await page.getByRole('textbox', { name: 'E-mail' }).fill('colecionador@kurio.com')
   await page.getByLabel('Senha', { exact: true }).fill('Kurio123!')
   await page.locator('.auth-form button[type=submit]').click()
-  await page.getByRole('link', { name: 'Perfil' }).click()
+  await page.locator('.header-actions .account-link').click()
   await expect(page.getByRole('heading', { name: 'Colecionador Kurio' })).toBeVisible()
 })
