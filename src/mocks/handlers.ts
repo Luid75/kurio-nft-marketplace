@@ -83,16 +83,23 @@ export const handlers = [
     await delay(380)
     const key = request.headers.get('Idempotency-Key')
     if (!key) return errorResponse('Identificador da tentativa ausente.', 400)
-    const body = await request.json() as { items: CartLine[]; coupon: string; collector: Collector; wallet: string }
+    const body = await request.json() as { items: CartLine[]; coupon: string; collector: Collector; wallet: string; expectedTotal?: string }
     if (!body.collector?.id) return errorResponse('Entre na sua conta.', 401)
     if (!body.wallet) return errorResponse('Selecione uma carteira.', 400)
     const storageKey = 'kurio:orders:' + body.collector.id
     const orders = readStored<Array<Order & { requestKey: string }>>(storageKey, [])
     const previous = orders.find(order => order.requestKey === key)
-    if (previous) return HttpResponse.json(previous)
+    if (previous) {
+      const sameItems = JSON.stringify(previous.items.map(line => ({ id: line.nft.id, quantity: line.quantity }))) === JSON.stringify(body.items)
+      if (!sameItems || previous.quote.coupon !== (body.coupon?.trim().toUpperCase() || undefined) || previous.wallet !== body.wallet) {
+        return errorResponse('Esta chave de idempotência já foi utilizada com outro pedido.', 409)
+      }
+      return HttpResponse.json(previous)
+    }
     try {
       const quote = quoteFor(body.items, body.coupon)
       if (!body.items.length) return errorResponse('Carrinho vazio.', 400)
+      if (body.expectedTotal !== undefined && !new Decimal(body.expectedTotal).equals(quote.total)) return errorResponse('Os valores do pedido mudaram. Revise a cotação antes de confirmar.', 409)
       const order: Order & { requestKey: string } = {
         id: 'KUR-' + crypto.randomUUID().slice(0, 8).toUpperCase(),
         requestKey: key,
