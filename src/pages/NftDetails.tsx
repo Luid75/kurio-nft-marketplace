@@ -1,3 +1,4 @@
+import { initialFilters } from '../lib/search'
 import { useState } from 'react'
 import { Link, useParams } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
@@ -16,10 +17,10 @@ export function NftDetails() {
   const { addToCart, toggleFavorite, favorites } = useMarketplace()
   const { data: nft, isPending, isError, error, refetch } = useQuery({ queryKey: ['nft', nftId], queryFn: () => getNft(nftId), retry: false })
   if (isPending) return <div className="container state-panel page-gap">Carregando NFT...</div>
-  if (isError || !nft) return <div className="container state-panel page-gap"><h2>NFT não encontrado</h2><p>{error instanceof Error ? error.message : 'O item solicitado não está disponível.'}</p><Button onClick={() => void refetch()}>Tentar novamente</Button> <Link to="/">Voltar ao mercado</Link></div>
+  if (isError || !nft) return <div className="container state-panel page-gap"><h2>NFT não encontrado</h2><p>{error instanceof Error ? error.message : 'O item solicitado não está disponível.'}</p><Button onClick={() => void refetch()}>Tentar novamente</Button> <Link to="/" search={initialFilters}>Voltar ao mercado</Link></div>
   const available = Math.min(20, nft.maxEdition - nft.edition + 1)
   return <div className="container detail-page">
-    <div className="breadcrumbs"><Link to="/">Início</Link> <ChevronRight size={14}/> <Link to="/">Mercado</Link> <ChevronRight size={14}/> {nft.name}</div>
+    <div className="breadcrumbs"><Link to="/" search={initialFilters}>Início</Link> <ChevronRight size={14}/> <Link to="/" search={initialFilters}>Mercado</Link> <ChevronRight size={14}/> {nft.name}</div>
     <div className="detail-hero">
       <div className="detail-gallery"><div className="gallery-thumbnails">{Array.from({length:4},(_,index)=><button className={index===0?'selected':''} key={index} aria-label={'Vista '+(index+1)}><Art variant={nft.variant}/></button>)}</div><div className="detail-primary-art"><Art variant={nft.variant}/></div></div>
       <div className="detail-info">

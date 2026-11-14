@@ -1,3 +1,4 @@
+import { initialFilters } from '../lib/search'
 import { useState, type FormEvent } from 'react'
 import { Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
@@ -22,9 +23,9 @@ export function Cart() {
   function applyCoupon(event: FormEvent) { event.preventDefault(); const code = couponText.trim().toUpperCase(); setCoupon(code); sessionStorage.setItem('kurio:checkout:coupon', code) }
   function requestLogin() { setAuthMode('login'); setAuthOpen(true) }
   return <div className="container cart-page">
-    <div className="breadcrumbs"><Link to="/">Início</Link> / <Link to="/">Mercado</Link> / Carrinho</div>
+    <div className="breadcrumbs"><Link to="/" search={initialFilters}>Início</Link> / <Link to="/" search={initialFilters}>Mercado</Link> / Carrinho</div>
     <h1 className="page-title">Carrinho de NFTs</h1>
-    {!lines.length ? <div className="state-panel empty-cart"><ShoppingBag size={34}/><h2>Seu carrinho está vazio</h2><p>Encontre um NFT para começar sua coleção.</p><Link className="ui-button ui-button-primary ui-button-default" to="/">Explorar mercado</Link></div> :
+    {!lines.length ? <div className="state-panel empty-cart"><ShoppingBag size={34}/><h2>Seu carrinho está vazio</h2><p>Encontre um NFT para começar sua coleção.</p><Link className="ui-button ui-button-primary ui-button-default" to="/" search={initialFilters}>Explorar mercado</Link></div> :
       <div className="cart-layout">
         <div className="cart-products"><div className="cart-head"><span>NFTs</span><span>Preço</span><span>Edições</span><span>Total</span></div>
           {lines.map(({nft,quantity})=><div className="cart-line" key={nft.id}>
@@ -39,7 +40,7 @@ export function Cart() {
           {quote.isError && <p className="form-error" role="alert">{errorMessage(quote.error)}</p>}
           {quote.data && <div className="summary-lines"><div><span>Subtotal</span><span>{money(quote.data.subtotal)}</span></div><div><span>Desconto do lançamento</span><span>− {money(quote.data.discount)}</span></div><div><span>Taxa de rede</span><span>{money(quote.data.networkFee)}</span></div><div className="summary-total"><strong>Total</strong><strong>{money(quote.data.total)}</strong></div></div>}
           {collector ? <Link className={'ui-button ui-button-primary ui-button-default checkout-cta'+(quote.isError?' disabled':'')} to="/checkout">Conectar e finalizar</Link> : <Button className="checkout-cta" onClick={requestLogin}>Entrar para finalizar</Button>}
-          <Link to="/" className="continue-link">Continuar explorando</Link>
+          <Link to="/" search={initialFilters} className="continue-link">Continuar explorando</Link>
         </aside>
       </div>}
     <section className="related cart-related"><h3>Colecionadores também viram</h3><div className="related-grid">{nfts.slice(3,8).map(nft=><NftCard nft={nft} key={nft.id}/>)}</div></section>

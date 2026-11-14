@@ -1,3 +1,4 @@
+import { initialFilters } from '../lib/search'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -27,7 +28,7 @@ export function Checkout() {
   })
   useEffect(() => { requestKey.current = crypto.randomUUID() }, [cart, coupon, wallet])
   if (!collector) return <div className="container state-panel page-gap"><LockKeyhole size={30}/><h2>Entre para continuar</h2><p>É necessário ter uma conta para finalizar.</p><Button onClick={()=>{setAuthMode('login');setAuthOpen(true)}}>Entrar</Button></div>
-  if (!cart.length) return <div className="container state-panel page-gap"><h2>Nenhum item para finalizar</h2><Link to="/">Voltar ao mercado</Link></div>
+  if (!cart.length) return <div className="container state-panel page-gap"><h2>Nenhum item para finalizar</h2><Link to="/" search={initialFilters}>Voltar ao mercado</Link></div>
   return <div className="container checkout-page">
     <div className="breadcrumbs"><Link to="/cart">Carrinho</Link> / Pagamento</div><h1 className="page-title">Finalizar coleção</h1>
     <div className="checkout-layout">
