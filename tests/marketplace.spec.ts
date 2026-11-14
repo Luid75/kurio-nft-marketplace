@@ -48,7 +48,7 @@ test('detalhes não sobrepõem imagem e informações', async ({ page }) => {
   await page.getByRole('button', { name: 'Vista 2' }).click()
   await expect(page.getByRole('button', { name: 'Vista 2' })).toHaveAttribute('aria-pressed', 'true')
   await page.getByRole('button', { name: 'Voltar à página anterior' }).click()
-  await expect(page).toHaveURL(/\/$/)
+  await expect(page).toHaveURL(url => url.pathname === '/')
 })
 
 test('diário não invade o rodapé', async ({ page }) => {
