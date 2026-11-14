@@ -108,10 +108,11 @@ export const handlers = [
       const quote = quoteFor(body.items, body.coupon)
       if (!body.items.length) return errorResponse('Carrinho vazio.', 400)
       if (body.expectedTotal !== undefined && !new Decimal(body.expectedTotal).equals(quote.total)) return errorResponse('Os valores do pedido mudaram. Revise a cotação antes de confirmar.', 409)
+      const shouldDecline = body.wallet.toLowerCase().includes('recusada')
       const order: Order & { requestKey: string } = {
         id: 'KUR-' + crypto.randomUUID().slice(0, 8).toUpperCase(),
         requestKey: key,
-        status: 'confirmed',
+        status: shouldDecline ? 'declined' : 'confirmed',
         createdAt: new Date().toISOString(),
         items: body.items.map(line => ({ nft: nfts.find(item => item.id === line.id)!, quantity: line.quantity, price: nfts.find(item => item.id === line.id)!.price })),
         quote, collector: body.collector, wallet: body.wallet,
