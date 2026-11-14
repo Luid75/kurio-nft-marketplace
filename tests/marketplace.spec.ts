@@ -59,3 +59,18 @@ test('diário não invade o rodapé', async ({ page }) => {
   expect(footer).not.toBeNull()
   if (journal && footer) expect(journal.y + journal.height).toBeLessThanOrEqual(footer.y + 2)
 })
+
+
+test('navegação principal não produz erros de execução', async ({ page }) => {
+  const errors: string[] = []
+  page.on('pageerror', error => errors.push(error.message))
+  await page.goto('/')
+  await expect(page.locator('.nft-card').first()).toBeVisible()
+  await page.locator('.nft-card').first().getByRole('link').first().click()
+  await expect(page.locator('.detail-info h1')).toBeVisible()
+  await page.getByRole('button', { name: 'Voltar à página anterior' }).click()
+  await expect(page.locator('.nft-card').first()).toBeVisible()
+  await page.getByRole('link', { name: /Carrinho,/ }).click()
+  await expect(page.getByRole('heading', { name: 'Carrinho de NFTs' })).toBeVisible()
+  expect(errors).toEqual([])
+})
