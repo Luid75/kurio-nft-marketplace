@@ -74,3 +74,25 @@ test('navegação principal não produz erros de execução', async ({ page }) =
   await expect(page.getByRole('heading', { name: 'Carrinho de NFTs' })).toBeVisible()
   expect(errors).toEqual([])
 })
+
+
+test('API impede reutilização de chave idempotente com pedido diferente', async ({ page }) => {
+  await page.goto('/')
+  const result = await page.evaluate(async () => {
+    const key = crypto.randomUUID()
+    const collector = { id: 'colecionador@kurio.com', name: 'Colecionador Kurio', email: 'colecionador@kurio.com' }
+    const request = (quantity: number) => fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Idempotency-Key': key },
+      body: JSON.stringify({ items: [{ id: 'emerald-ape-042', quantity }], coupon: '', collector, wallet: 'MetaMask (simulada)' }),
+    })
+    const first = await request(1)
+    const repeat = await request(1)
+    const conflict = await request(2)
+    return { first: first.status, repeat: repeat.status, conflict: conflict.status, firstId: (await first.json()).id, repeatId: (await repeat.json()).id }
+  })
+  expect(result.first).toBe(201)
+  expect(result.repeat).toBe(200)
+  expect(result.firstId).toBe(result.repeatId)
+  expect(result.conflict).toBe(409)
+})
