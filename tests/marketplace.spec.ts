@@ -33,3 +33,29 @@ test('login de demonstração exibe perfil', async ({ page }) => {
   await page.locator('.header-actions .account-link').click()
   await expect(page.getByRole('heading', { name: 'Colecionador Kurio' })).toBeVisible()
 })
+
+
+test('detalhes não sobrepõem imagem e informações', async ({ page }) => {
+  await page.goto('/nft/emerald-ape-042')
+  await expect(page.getByRole('heading', { name: 'Emerald Ape #042' })).toBeVisible()
+  const gallery = await page.locator('.detail-gallery').boundingBox()
+  const info = await page.locator('.detail-info').boundingBox()
+  expect(gallery).not.toBeNull()
+  expect(info).not.toBeNull()
+  if (gallery && info && (await page.viewportSize())!.width > 780) {
+    expect(gallery.x + gallery.width).toBeLessThanOrEqual(info.x + 1)
+  }
+  await page.getByRole('button', { name: 'Vista 2' }).click()
+  await expect(page.getByRole('button', { name: 'Vista 2' })).toHaveAttribute('aria-pressed', 'true')
+  await page.getByRole('button', { name: 'Voltar à página anterior' }).click()
+  await expect(page).toHaveURL(/\/$/)
+})
+
+test('diário não invade o rodapé', async ({ page }) => {
+  await page.goto('/')
+  const journal = await page.locator('.journal').boundingBox()
+  const footer = await page.locator('.footer').boundingBox()
+  expect(journal).not.toBeNull()
+  expect(footer).not.toBeNull()
+  if (journal && footer) expect(journal.y + journal.height).toBeLessThanOrEqual(footer.y + 2)
+})
