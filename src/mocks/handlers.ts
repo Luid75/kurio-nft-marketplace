@@ -6,6 +6,11 @@ import type { CartLine, Collector, Order, Quote } from '../types'
 
 type Credentials = { name: string; email: string; password: string }
 const demo: Credentials = { name: 'Colecionador Kurio', email: 'colecionador@kurio.com', password: 'Kurio123!' }
+const hashPassword = async (password: string) => {
+  const bytes = new TextEncoder().encode(password)
+  const digest = await crypto.subtle.digest('SHA-256', bytes)
+  return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('')
+}
 
 const quoteFor = (items: CartLine[], coupon = ''): Quote => {
   let subtotal = new Decimal(0)
@@ -61,8 +66,11 @@ export const handlers = [
   http.post('/api/auth/login', async ({ request }) => {
     const body = await request.json() as { email: string; password: string }
     const registered = readStored<Credentials[]>('kurio:users', [])
-    const user = [demo, ...registered].find(item => item.email.toLowerCase() === body.email.toLowerCase() && item.password === body.password)
+    const normalizedEmail = body.email?.toLowerCase() || ''
+    const hash = await hashPassword(body.password || '')
+    const user = [demo, ...registered].find(item => item.email.toLowerCase() === normalizedEmail && (item === demo ? item.password === body.password : item.password === hash || item.password === body.password))
     if (!user) return errorResponse('E-mail ou senha incorretos.', 401)
+    if (user !== demo && user.password !== hash) saveStored('kurio:users', registered.map(item => item.email === user.email ? { ...item, password: hash } : item))
     return HttpResponse.json({ id: user.email.toLowerCase(), name: user.name, email: user.email } satisfies Collector)
   }),
   http.post('/api/auth/register', async ({ request }) => {
@@ -70,7 +78,7 @@ export const handlers = [
     if (!body.name?.trim() || !body.email?.includes('@') || (body.password?.length || 0) < 8) return errorResponse('Confira seus dados e use uma senha de pelo menos 8 caracteres.')
     const users = readStored<Credentials[]>('kurio:users', [])
     if ([demo, ...users].some(item => item.email.toLowerCase() === body.email.toLowerCase())) return errorResponse('Este e-mail já está cadastrado.', 409)
-    saveStored('kurio:users', [...users, { name: body.name.trim(), email: body.email.toLowerCase(), password: body.password }])
+    saveStored('kurio:users', [...users, { name: body.name.trim(), email: body.email.toLowerCase(), password: await hashPassword(body.password) }])
     return HttpResponse.json({ id: body.email.toLowerCase(), name: body.name.trim(), email: body.email.toLowerCase() } satisfies Collector, { status: 201 })
   }),
   http.post('/api/quote', async ({ request }) => {
