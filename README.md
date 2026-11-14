@@ -27,6 +27,7 @@ A configuração do MSW gera o arquivo `public/mockServiceWorker.js` durante a i
 - E-mail: `colecionador@kurio.com`
 - Senha: `Kurio123!`
 - Cupom: `KURIO10` (10% de desconto)
+- Cenário de pagamento recusado: no checkout, selecione `Carteira recusada (simulada)`; o pedido terá estado `declined` e os itens serão mantidos no carrinho.
 
 É possível criar outros usuários fictícios. **Não use senhas reais**: a autenticação e o armazenamento são simulados no navegador.
 
